@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="style/style.css">
+</head>
+<body>
+    <canvas id="canvassample" width="800" height="560"></canvas>
+    <div style="padding:10px"></div>
+        <button type="button" onclick="colorRed()">RED</button>
+        <button type="button" onclick="colorBlue()">BLUE</button>
+        <button type="button" onclick="colorBlack()">BLACK</button>
+    </div>
+    <div style="padding:10px"></div>
+        <button type="button" onclick="clearCanvas()">リセット</button>
+        <button type="button" onclick="prevCanvas()">戻る</button>
+        <button type="button" onclick="nextCanvas()">進む</button>
+    </div>
+    <div style="padding:10px">
+        <button type="button" onclick="chgImg()" value="1">画像変換</button>
+    </div>
+    <h2>画像出力<h2> 
+    <div id="img-box"><img id="newImg"></div>
+    <a id="download">Download</a>
+    <script src="js/main.js"></script>
+</body>
+</html>
