@@ -153,10 +153,13 @@ function setLocalStoreage(){
 let moveflg = 0;
 let Xpoint;
 let Ypoint;
-let defSize = 3
-let defColor = "#000";
 let temp;
 let myStorage = localStorage;
+
+// ペンのサイズ定義
+let defSize = 3
+// ペンのカラー定義
+let defColor = "#000";
 
 // ストレージの初期化
 window.onload = initLocalStorage();
