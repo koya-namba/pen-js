@@ -2,6 +2,10 @@
 const canvas = document.getElementById('canvassample');
 const ctx = canvas.getContext('2d');
 
+const toolinfo = document.getElementById('tool');
+const changeToolBtn = document.getElementById('changeToolBtn');
+
+const colorinfo = document.getElementById('color');
 const changeRedBtn = document.getElementById('changeRedBtn');
 const changeBlueBtn = document.getElementById('changeBlueBtn');
 const changeBlackBtn = document.getElementById('changeBlackBtn');
@@ -17,20 +21,20 @@ const downloadLink = document.getElementById('download');
 
 // canvasを用いて，コートを初期化
 function init() {
-    // 白で塗りつぶす
-    ctx.fillStyle = "white";
+    // 緑で塗りつぶす
+    ctx.fillStyle = "mediumseagreen";
     ctx.fillRect(0, 0, canvas.width, canvas.height);
 
     // コートの線
-    ctx.strokeStyle = '#808080';
+    ctx.strokeStyle = 'white';//#808080';
     ctx.lineWidth = 3;
 
     // 即時実行関数を使う
     // コート左側のline
     (function () {
         ctx.beginPath();
-        ctx.moveTo(10, 10);
-        ctx.lineTo(10, canvas.height-10);
+        ctx.moveTo(50, 50);
+        ctx.lineTo(50, canvas.height-50);
         ctx.closePath();
         ctx.stroke();
     }());
@@ -38,26 +42,35 @@ function init() {
     // コート右側のline
     (function () {
         ctx.beginPath();
-        ctx.moveTo(canvas.width-10, 10);
-        ctx.lineTo(canvas.width-10, canvas.height-10);
+        ctx.moveTo(canvas.width-50, 50);
+        ctx.lineTo(canvas.width-50, canvas.height-50);
         ctx.closePath();
         ctx.stroke();
     }());
     
-    // コート上のline
+    // コート下のline
     (function() {
         ctx.beginPath();
-        ctx.moveTo(10, canvas.height-10);
-        ctx.lineTo(canvas.width-10, canvas.height-10);
+        ctx.moveTo(50, canvas.height-50);
+        ctx.lineTo(canvas.width-50, canvas.height-50);
         ctx.closePath();
         ctx.stroke();
     }());
 
-    // コート下のline
+    // コート上のline
     (function() {
         ctx.beginPath();
-        ctx.moveTo(10, 10);
-        ctx.lineTo(canvas.width-10, 10);
+        ctx.moveTo(50, 50);
+        ctx.lineTo(canvas.width-50, 50);
+        ctx.closePath();
+        ctx.stroke();
+    }());
+
+    // コート左の25yard line
+    (function() {
+        ctx.beginPath();
+        ctx.moveTo(279, 50);
+        ctx.lineTo(279, canvas.height-50);
         ctx.closePath();
         ctx.stroke();
     }());
@@ -65,33 +78,85 @@ function init() {
     // コート中央のline
     (function() {
         ctx.beginPath();
-        ctx.moveTo(canvas.width/2, 10);
-        ctx.lineTo(canvas.width/2, canvas.height-10);
+        ctx.moveTo(507, 50);
+        ctx.lineTo(507, canvas.height-50);
         ctx.closePath();
         ctx.stroke();
     }());
 
-    // コート中央の円
+    // コート右の75yard line
     (function() {
         ctx.beginPath();
-        ctx.arc(canvas.width/2, canvas.height/2, 100, 0, Math.PI*2, true);
+        ctx.moveTo(735, 50);
+        ctx.lineTo(735, canvas.height-50);
+        ctx.closePath();
         ctx.stroke();
     }());
 
-    // 左コート上部のゴールライン
-    (function() {
+    //ペナルティスポット(右)
+    (function(){
         ctx.beginPath();
-        ctx.moveTo(10, canvas.height/2 + 100);
-        ctx.lineTo(100, canvas.height/2 + 100);
-        ctx.closePath();
+        ctx.arc(114, canvas.height/2, 5, 0, 2*Math.PI, true);
+        ctx.fillStyle = 'white';
+        ctx.fill();
+        ctx.stroke();
+    }());
+
+    //ペナルティスポット(左)
+    (function(){
+        ctx.beginPath();
+        ctx.arc(canvas.width - 114, canvas.height/2, 5, 0, 2*Math.PI, true);
+        ctx.fillStyle = 'white';
+        ctx.fill();
+        ctx.stroke();
+    }());
+
+    //コート左側のサークルライン
+    (function(){
+        ctx.beginPath();
+        ctx.arc(50, canvas.height/2, 146.3, 3*Math.PI/2, Math.PI/2, false);
+        ctx.stroke();
+    }());
+
+    //コート左側のサークルライン(外側)
+    (function(){
+        ctx.beginPath();
+        ctx.setLineDash([10,7.5]);
+        ctx.arc(50, canvas.height/2, 196.3, 3*Math.PI/2, Math.PI/2, false);
+        ctx.stroke();
+    }());
+
+    //コート右側のサークルライン
+    (function(){
+        ctx.beginPath();
+        ctx.setLineDash([]);
+        ctx.arc(canvas.width-50, canvas.height/2, 146.3, -3*Math.PI/2, -Math.PI/2, false);
+        ctx.stroke();
+    }());
+
+    //コート右側のサークルライン(外側)
+    (function(){
+        ctx.beginPath();
+        ctx.setLineDash([10,7.5]);
+        ctx.arc(canvas.width-50, canvas.height/2, 196.3, -3*Math.PI/2, -Math.PI/2, false);
         ctx.stroke();
     }());
 
     // 左コート下部のゴールライン
     (function() {
         ctx.beginPath();
-        ctx.moveTo(10, canvas.height/2 - 100);
-        ctx.lineTo(100, canvas.height/2 - 100);
+        ctx.setLineDash([]);
+        ctx.moveTo(50, canvas.height/2 + 25);
+        ctx.lineTo(20, canvas.height/2 + 25);
+        ctx.closePath();
+        ctx.stroke();
+    }());
+
+    // 左コート上部のゴールライン
+    (function() {
+        ctx.beginPath();
+        ctx.moveTo(50, canvas.height/2 - 25);
+        ctx.lineTo(20, canvas.height/2 - 25);
         ctx.closePath();
         ctx.stroke();
     }());
@@ -99,17 +164,8 @@ function init() {
     // 左コートのゴールライン
     (function() {
         ctx.beginPath();
-        ctx.moveTo(100, canvas.height/2 - 100);
-        ctx.lineTo(100, canvas.height/2 + 100);
-        ctx.closePath();
-        ctx.stroke();
-    }());
-
-    // 右コート上部のゴールライン
-    (function() {
-        ctx.beginPath();
-        ctx.moveTo(canvas.width-10, canvas.height/2 + 100);
-        ctx.lineTo(canvas.width - 100, canvas.height/2 + 100);
+        ctx.moveTo(20, canvas.height/2 - 25);
+        ctx.lineTo(20, canvas.height/2 + 25);
         ctx.closePath();
         ctx.stroke();
     }());
@@ -117,8 +173,17 @@ function init() {
     // 右コート下部のゴールライン
     (function() {
         ctx.beginPath();
-        ctx.moveTo(canvas.width-10, canvas.height/2 - 100);
-        ctx.lineTo(canvas.width - 100, canvas.height/2 - 100);
+        ctx.moveTo(canvas.width-50, canvas.height/2 + 25);
+        ctx.lineTo(canvas.width - 20, canvas.height/2 + 25);
+        ctx.closePath();
+        ctx.stroke();
+    }());
+
+    // 右コート上部のゴールライン
+    (function() {
+        ctx.beginPath();
+        ctx.moveTo(canvas.width-50, canvas.height/2 - 25);
+        ctx.lineTo(canvas.width - 20, canvas.height/2 - 25);
         ctx.closePath();
         ctx.stroke();
     }());
@@ -126,8 +191,8 @@ function init() {
     // 右コートのゴールライン
     (function() {
         ctx.beginPath();
-        ctx.moveTo(canvas.width - 100, canvas.height/2 - 100);
-        ctx.lineTo(canvas.width - 100, canvas.height/2 + 100);
+        ctx.moveTo(canvas.width - 20, canvas.height/2 - 25);
+        ctx.lineTo(canvas.width - 20, canvas.height/2 + 25);
         ctx.closePath();
         ctx.stroke();
     }());
@@ -150,6 +215,7 @@ function setLocalStoreage(){
 }
 
 // 変数を定義
+let is_pen = 1;
 let moveflg = 0;
 let Xpoint;
 let Ypoint;
@@ -167,21 +233,6 @@ window.onload = initLocalStorage();
 // canvasを初期化
 init();
 
-// ペンの色を赤に変更
-changeRedBtn.addEventListener('click', () => {
-    defColor = '#F00';
-});
-
-// ペンの色を青に変更
-changeBlueBtn.addEventListener('click', () => {
-    defColor = '#00F';
-});
-
-// ペンの色を黒に変更
-changeBlackBtn.addEventListener('click', () => {
-    defColor = '#000';
-});
-
 // PC対応
 canvas.addEventListener('mousedown', startPoint, false);
 canvas.addEventListener('mousemove', movePoint, false);
@@ -190,7 +241,76 @@ canvas.addEventListener('mouseup', endPoint, false);
 canvas.addEventListener('touchstart', startPoint, false);
 canvas.addEventListener('touchmove', movePoint, false);
 canvas.addEventListener('touchend', endPoint, false);
+
+changeToolBtn.addEventListener('click', () => {
+    if (is_pen) {
+        toolinfo.innerText = 'ペン';
+        changeToolBtn.innerText = 'スタンプに変更'
+        changeStampMode();
+        is_pen = 0
+    } else {
+        toolinfo.innerText = 'スタンプ';
+        changeToolBtn.innerText = 'ペンに変更'
+        changePenMode();
+        is_pen = 1
+    }
+    console.log(is_pen);
+})
+
+// 色を赤に変更
+changeRedBtn.addEventListener('click', () => {
+    defColor = '#F00';
+    colorinfo.innerText = "赤"
+});
+
+// 色を青に変更
+changeBlueBtn.addEventListener('click', () => {
+    defColor = '#00F';
+    colorinfo.innerText = "青"
+});
+
+// 色を黒に変更
+changeBlackBtn.addEventListener('click', () => {
+    defColor = '#000';
+    colorinfo.innerText = "黒"
+});
+
+const changePenMode = () => {
+    // スタンプ機能を解除
+    canvas.removeEventListener('click', stamped);
+    
+    // PC対応
+    canvas.addEventListener('mousedown', startPoint, false);
+    canvas.addEventListener('mousemove', movePoint, false);
+    canvas.addEventListener('mouseup', endPoint, false);
+    // スマホ対応
+    canvas.addEventListener('touchstart', startPoint, false);
+    canvas.addEventListener('touchmove', movePoint, false);
+    canvas.addEventListener('touchend', endPoint, false);
+}
+
+const changeStampMode = () => {
+    // マウス・タッチイベントを解除
+    canvas.removeEventListener('mousedown', startPoint);
+    canvas.removeEventListener('mousemove', movePoint);
+    canvas.removeEventListener('mouseup', endPoint);
+    canvas.removeEventListener('touchstart', startPoint);
+    canvas.removeEventListener('touchmove', movePoint);
+    canvas.removeEventListener('touchend', endPoint);
+    
+    //プレイヤーを配置
+    canvas.addEventListener('click', stamped);
+}
  
+// スタンプ関数
+function stamped(e) {
+    ctx.beginPath();
+    ctx.arc(e.clientX, e.clientY, 5, 0, Math.PI*2);
+    ctx.strokeStyle = defColor;
+    ctx.stroke();
+    setLocalStoreage();
+}
+
 // ペンの描き始め
 function startPoint(e){
     e.preventDefault();

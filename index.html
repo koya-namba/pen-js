@@ -9,10 +9,15 @@
 </head>
 <body>
     <!-- canvasを用意 -->
-    <canvas id="canvassample" width="800" height="560"></canvas>
+    <canvas id="canvassample" width="1014" height="650"></canvas>
+
+    <!-- ペンモードかスタンプモードを選択 -->
+    <p>現在は<span id="tool">ペン</span>モードです</p>
+    <button type="button" id="changeToolBtn">スタンプに変更</button>
 
     <!-- pen色を選択 -->
     <div style="padding:10px"></div>
+        <p>現在のカラーは<span id="color">黒</span>色です</p>
         <button type="button" id="changeRedBtn">RED</button>
         <button type="button" id="changeBlueBtn">BLUE</button>
         <button type="button" id="changeBlackBtn">BLACK</button>
