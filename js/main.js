@@ -25,8 +25,23 @@ const changeImgBtn = document.getElementById('changeImgBtn');
 const img = document.getElementById("newImg");
 const downloadLink = document.getElementById('download');
 
+// 変数を定義
+let moveflg = 0;
+let Xpoint;
+let Ypoint;
+let temp;
+let myStorage = localStorage;
+
+// ペンのサイズ定義
+let defSize = 3
+// ペンのカラー定義
+let defColor = "#000";
+// ペンorスタンプ
+let is_pen = 1;
+
+
 // canvasを用いて，コートを初期化
-function init() {
+const initCanvas = () => {
     // 緑で塗りつぶす
     ctx.fillStyle = "mediumseagreen";
     ctx.fillRect(0, 0, canvas.width, canvas.height);
@@ -205,12 +220,12 @@ function init() {
 }
 
 // ローカルストレージを初期化
-function initLocalStorage(){
+const initLocalStorage = () => {
     myStorage.setItem("__log", JSON.stringify([]));
 }
 
 // ローカルストレージを準備
-function setLocalStoreage(){
+const setLocalStoreage = () => {
     let png = canvas.toDataURL();
     let logs = JSON.parse(myStorage.getItem("__log"));
     setTimeout(function(){
@@ -220,25 +235,105 @@ function setLocalStoreage(){
     }, 0);
 }
 
-// 変数を定義
-let moveflg = 0;
-let Xpoint;
-let Ypoint;
-let temp;
-let myStorage = localStorage;
+// ペンに変更
+const changePenMode = () => {
+    // スタンプ機能を解除
+    canvas.removeEventListener('click', stamped);
+    
+    // PC対応
+    canvas.addEventListener('mousedown', startPoint, false);
+    canvas.addEventListener('mousemove', movePoint, false);
+    canvas.addEventListener('mouseup', endPoint, false);
+    // スマホ対応
+    canvas.addEventListener('touchstart', startPoint, false);
+    canvas.addEventListener('touchmove', movePoint, false);
+    canvas.addEventListener('touchend', endPoint, false);
+}
 
-// ペンのサイズ定義
-let defSize = 3
-// ペンのカラー定義
-let defColor = "#000";
-// ペンorスタンプ
-let is_pen = 1;
+// スタンプに変更
+const changeStampMode = () => {
+    // マウス・タッチイベントを解除
+    canvas.removeEventListener('mousedown', startPoint);
+    canvas.removeEventListener('mousemove', movePoint);
+    canvas.removeEventListener('mouseup', endPoint);
+    canvas.removeEventListener('touchstart', startPoint);
+    canvas.removeEventListener('touchmove', movePoint);
+    canvas.removeEventListener('touchend', endPoint);
+    
+    //プレイヤーを配置
+    canvas.addEventListener('click', stamped);
+}
+
+// スタンプ描画
+const stamped = (e) => {
+    ctx.beginPath();
+    ctx.arc(e.clientX, e.clientY, 5, 0, Math.PI*2);
+    ctx.strokeStyle = defColor;
+    ctx.stroke();
+    setLocalStoreage();
+}
+
+// ペンの描き始め
+const startPoint = (e) => {
+    e.preventDefault();
+    ctx.beginPath();
+    // ペンがずれてたらここを修正
+    Xpoint = e.layerX-5;
+    Ypoint = e.layerY;
+  ctx.moveTo(Xpoint, Ypoint);
+}
+
+// ペンの移動
+const movePoint = (e) => {
+    if(e.buttons === 1 || e.witch === 1 || e.type == 'touchmove'){
+        Xpoint = e.layerX-5;
+        Ypoint = e.layerY-5;
+        moveflg = 1;
+        ctx.lineTo(Xpoint-5, Ypoint-5);
+        ctx.lineCap = "round";
+        ctx.lineWidth = defSize * 2;
+        ctx.strokeStyle = defColor;
+        ctx.stroke();  
+    }
+}
+
+// ペンは離す時
+const endPoint = (e) => {
+    if(moveflg === 0){
+       ctx.lineTo(Xpoint-6, Ypoint-6);
+       ctx.lineCap = "round";
+       ctx.lineWidth = defSize * 2;
+       ctx.strokeStyle = defColor;
+       ctx.stroke();
+    }
+    moveflg = 0;
+    setLocalStoreage();
+}
+
+// prev, nextボタンの時に用いる関数
+const draw = (src) => {
+    let img = new Image();
+    img.src = src; 
+    img.onload = function() {
+        ctx.drawImage(img, 0, 0);
+    }
+}
+
+// canvasをきれいにして，img, downloadのソースを削除
+const resetCanvas = () => {
+    ctx.clearRect(0, 0, ctx.canvas.clientWidth, ctx.canvas.clientHeight);
+    initCanvas();    
+    img.src=null;
+    img.removeAttribute('src');
+    downloadLink.removeAttribute('href')
+    downloadLink.removeAttribute('download')
+}
 
 // ストレージの初期化
 window.onload = initLocalStorage();
 
 // canvasを初期化
-init();
+initCanvas();
 
 // 最初はペンモード
 // PC対応
@@ -284,80 +379,6 @@ changeBlackBtn.addEventListener('click', () => {
     colorinfo.innerText = "黒"
 });
 
-const changePenMode = () => {
-    // スタンプ機能を解除
-    canvas.removeEventListener('click', stamped);
-    
-    // PC対応
-    canvas.addEventListener('mousedown', startPoint, false);
-    canvas.addEventListener('mousemove', movePoint, false);
-    canvas.addEventListener('mouseup', endPoint, false);
-    // スマホ対応
-    canvas.addEventListener('touchstart', startPoint, false);
-    canvas.addEventListener('touchmove', movePoint, false);
-    canvas.addEventListener('touchend', endPoint, false);
-}
-
-const changeStampMode = () => {
-    // マウス・タッチイベントを解除
-    canvas.removeEventListener('mousedown', startPoint);
-    canvas.removeEventListener('mousemove', movePoint);
-    canvas.removeEventListener('mouseup', endPoint);
-    canvas.removeEventListener('touchstart', startPoint);
-    canvas.removeEventListener('touchmove', movePoint);
-    canvas.removeEventListener('touchend', endPoint);
-    
-    //プレイヤーを配置
-    canvas.addEventListener('click', stamped);
-}
- 
-// スタンプ関数
-function stamped(e) {
-    ctx.beginPath();
-    ctx.arc(e.clientX, e.clientY, 5, 0, Math.PI*2);
-    ctx.strokeStyle = defColor;
-    ctx.stroke();
-    setLocalStoreage();
-}
-
-// ペンの描き始め
-function startPoint(e){
-    e.preventDefault();
-    ctx.beginPath();
-    // ペンがずれてたらここを修正
-    Xpoint = e.layerX-5;
-    Ypoint = e.layerY;
-  ctx.moveTo(Xpoint, Ypoint);
-}
-
-// ペンの移動
-function movePoint(e){
-    if(e.buttons === 1 || e.witch === 1 || e.type == 'touchmove'){
-        Xpoint = e.layerX-5;
-        Ypoint = e.layerY-5;
-        moveflg = 1;
-        ctx.lineTo(Xpoint-5, Ypoint-5);
-        ctx.lineCap = "round";
-        ctx.lineWidth = defSize * 2;
-        ctx.strokeStyle = defColor;
-        ctx.stroke();  
-    }
-}
-
-// ペンは離す時
-function endPoint(e)
-{
-    if(moveflg === 0){
-       ctx.lineTo(Xpoint-6, Ypoint-6);
-       ctx.lineCap = "round";
-       ctx.lineWidth = defSize * 2;
-       ctx.strokeStyle = defColor;
-       ctx.stroke();
-    }
-    moveflg = 0;
-    setLocalStoreage();
-}
-
 // canvasに関わるものを初期化
 resetBtn.addEventListener('click', () => {
     if(confirm('Canvasを初期化しますか？'))
@@ -367,16 +388,6 @@ resetBtn.addEventListener('click', () => {
         resetCanvas();
     }
 });
-
-// canvasをきれいにして，img, downloadのソースを削除
-function resetCanvas() {
-    ctx.clearRect(0, 0, ctx.canvas.clientWidth, ctx.canvas.clientHeight);
-    init();    
-    img.src=null;
-    img.removeAttribute('src');
-    downloadLink.removeAttribute('href')
-    downloadLink.removeAttribute('download')
-}
 
 // canvasに書いてあるものを画像データに変換し，img, downloadにソースを載せる
 changeImgBtn.addEventListener('click', () => {
@@ -413,12 +424,3 @@ nextBtn.addEventListener('click', () => {
         }, 0);
     }
 });
-
-// prev, nextボタンの時に用いる関数
-function draw(src) {
-    let img = new Image();
-    img.src = src; 
-    img.onload = function() {
-        ctx.drawImage(img, 0, 0);
-    }
-}
