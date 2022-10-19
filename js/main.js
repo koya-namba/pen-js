@@ -1,21 +1,27 @@
 // htmlのidから読み込み
+// canvas
 const canvas = document.getElementById('canvassample');
 const ctx = canvas.getContext('2d');
 
+// ペンorスタンプ
 const toolinfo = document.getElementById('tool');
 const changeToolBtn = document.getElementById('changeToolBtn');
 
+// color
 const colorinfo = document.getElementById('color');
 const changeRedBtn = document.getElementById('changeRedBtn');
 const changeBlueBtn = document.getElementById('changeBlueBtn');
 const changeBlackBtn = document.getElementById('changeBlackBtn');
 
+// リセット，進む，戻るボタン
 const resetBtn = document.getElementById('resetBtn');
 const backBtn = document.getElementById('backBtn');
 const nextBtn = document.getElementById('nextBtn');
 
+// 画像変換ボタン
 const changeImgBtn = document.getElementById('changeImgBtn');
 
+// 画像リンク
 const img = document.getElementById("newImg");
 const downloadLink = document.getElementById('download');
 
@@ -215,7 +221,6 @@ function setLocalStoreage(){
 }
 
 // 変数を定義
-let is_pen = 1;
 let moveflg = 0;
 let Xpoint;
 let Ypoint;
@@ -226,6 +231,8 @@ let myStorage = localStorage;
 let defSize = 3
 // ペンのカラー定義
 let defColor = "#000";
+// ペンorスタンプ
+let is_pen = 1;
 
 // ストレージの初期化
 window.onload = initLocalStorage();
@@ -233,6 +240,7 @@ window.onload = initLocalStorage();
 // canvasを初期化
 init();
 
+// 最初はペンモード
 // PC対応
 canvas.addEventListener('mousedown', startPoint, false);
 canvas.addEventListener('mousemove', movePoint, false);
@@ -242,19 +250,20 @@ canvas.addEventListener('touchstart', startPoint, false);
 canvas.addEventListener('touchmove', movePoint, false);
 canvas.addEventListener('touchend', endPoint, false);
 
+// モード変更
 changeToolBtn.addEventListener('click', () => {
+    // ペンならスタンプに変更
     if (is_pen) {
-        toolinfo.innerText = 'ペン';
-        changeToolBtn.innerText = 'スタンプに変更'
+        toolinfo.innerText = 'スタンプ';
+        changeToolBtn.innerText = 'ペンに変更'
         changeStampMode();
         is_pen = 0
     } else {
-        toolinfo.innerText = 'スタンプ';
-        changeToolBtn.innerText = 'ペンに変更'
+        toolinfo.innerText = 'ペン';
+        changeToolBtn.innerText = 'スタンプに変更'
         changePenMode();
         is_pen = 1
     }
-    console.log(is_pen);
 })
 
 // 色を赤に変更
