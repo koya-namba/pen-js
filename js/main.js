@@ -267,7 +267,7 @@ const changeStampMode = () => {
 // スタンプ描画
 const stamped = (e) => {
     ctx.beginPath();
-    ctx.arc(e.clientX, e.clientY, 5, 0, Math.PI*2);
+    ctx.arc(e.layerX-5, e.layerY-5, 5, 0, Math.PI*2);
     ctx.strokeStyle = defColor;
     ctx.stroke();
     setLocalStoreage();
